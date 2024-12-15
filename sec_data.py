@@ -33,11 +33,6 @@ def get_historical_10k_values(data_array, tag_name=None, desired_years=1):
             entries_by_year[year] = []
         entries_by_year[year].append(entry)
     
-    # IMPORTANT: There are multiple filings under 10-k for some/most years. I am pretty sure this is because
-    # the company made a "revision" filing and for some reason this is still under 10-k. This genius
-    # architecture is what allows there to be blank line items for line items that shouldnt be blank,
-    # becasue any item not re-recorded in the revision will return blank. So, we dig through the 0's
-    # until we find a non-zero, and then record that. this took way too long to figure out.
     results = []
     for year in sorted(entries_by_year.keys(), reverse=True):
         year_entries = entries_by_year[year]
@@ -54,14 +49,6 @@ def get_historical_10k_values(data_array, tag_name=None, desired_years=1):
                 break
         
         if value is not None:
-            # Tax benefits are encompassed in (parenthesis) even though they actually add to get net income
-            # after taxes. Handle accordingly
-            if tag_name in ['IncomeTaxExpenseBenefit', 'IncomeTaxesPaid']:
-                if value < 0:
-                    value = abs(value)
-                else:
-                    value = -value
-            
             results.append((value, date))
             if len(results) >= desired_years:
                 break
@@ -75,27 +62,45 @@ def extract_financial_data(ticker, desired_years=1):
         return None
     
     mappings = get_xbrl_tags()
-    
-    # Initialize results structure for multiple years
     results = {
         'years': {}
     }
     
-    # Process both statement types for each year
+    # First try to get shares outstanding
+    shares_found = False
+    for tag in mappings['balance_sheet']['outstanding_stock']:
+        if tag in data['facts']['us-gaap']:
+            if 'shares' in data['facts']['us-gaap'][tag]['units']:
+                values = get_historical_10k_values(
+                    data['facts']['us-gaap'][tag]['units']['shares'],
+                    tag,
+                    1  # Only need most recent
+                )
+                if values:
+                    results['shares_outstanding'] = values[0][0]
+                    shares_found = True
+                    break
+    
+    if not shares_found:
+        print("Warning: Could not fetch shares outstanding from SEC data, resorting to 1")
+        results['shares_outstanding'] = 1
+    
+    
     for statement_type, tags in mappings.items():
         for item, possible_tags in tags.items():
             for tag in possible_tags:
+                years_to_fetch = desired_years + 1 if item == 'accumulated_depreciation' else desired_years
+                
                 if tag in data['facts']['us-gaap']:
                     if 'USD' in data['facts']['us-gaap'][tag]['units']:
                         values = get_historical_10k_values(
                             data['facts']['us-gaap'][tag]['units']['USD'],
                             tag,
-                            desired_years
+                            years_to_fetch
                         )
                         
-                        # Store values for each year
                         for value, end_date in values:
-                            year = end_date[:4]  # Extract year from date
+                            year = end_date[:4]
                             if year not in results['years']:
                                 results['years'][year] = {
                                     'income_statement': {},
@@ -107,12 +112,38 @@ def extract_financial_data(ticker, desired_years=1):
                             }
                         break
 
+    # Keep track of the extra year's accumulated depreciation if we found it
+    extra_year_acc_dep = None
     all_years = sorted(results['years'].keys(), reverse=True)
+    
+    # If we got an extra year, store its accumulated depreciation before filtering
+    if len(all_years) > desired_years:
+        extra_year = all_years[-1]
+        if ('accumulated_depreciation' in results['years'][extra_year]['balance_sheet']):
+            extra_year_acc_dep = {
+                'value': results['years'][extra_year]['balance_sheet']['accumulated_depreciation']['value'],
+                'date': results['years'][extra_year]['balance_sheet']['accumulated_depreciation']['date']
+            }
+
+    # Filter to desired years
     years_to_keep = all_years[:desired_years]
     results['years'] = {year: results['years'][year] for year in years_to_keep}
 
-    # Calculate depreciation from accumulated depreciation changes bc I cant figure out how to pull it
+    # Calculate depreciation from accumulated depreciation changes
     sorted_years = sorted(results['years'].keys())
+    
+    # Handle first year if we have the extra year's data
+    if extra_year_acc_dep and sorted_years:
+        first_year = sorted_years[0]
+        if 'accumulated_depreciation' in results['years'][first_year]['balance_sheet']:
+            current_acc_dep = results['years'][first_year]['balance_sheet']['accumulated_depreciation']['value']
+            depreciation = current_acc_dep - extra_year_acc_dep['value']
+            results['years'][first_year]['income_statement']['depreciation'] = {
+                'value': depreciation,
+                'date': results['years'][first_year]['balance_sheet']['accumulated_depreciation']['date']
+            }
+    
+    # Calculate depreciation for remaining years
     for i in range(1, len(sorted_years)):
         current_year = sorted_years[i]
         prev_year = sorted_years[i-1]

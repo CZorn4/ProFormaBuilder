@@ -1,11 +1,11 @@
 import requests
 
 def get_cik_from_ticker(ticker):
-    
+
     # SEC-maintained JSON file for mapping tickers to CIKs
     url = "https://www.sec.gov/files/company_tickers.json"
 
-    # SEC requires User-Agent header or you will recieve 403. DEV NOTE: CHANGE FROM YOUR NAME IF THIS CODE MAKES PROD
+    # SEC requires User-Agent header or you will recieve 403.
     headers = {
         "User-Agent": "OU Research Project (email me at collin.d.zorn-1@ou.edu)"
     }

@@ -5,6 +5,7 @@ def get_xbrl_tags():
             'Revenues',
             'SalesRevenueNet',
             'RevenuesNetOfInterestExpense'
+            'RevenueFromContractWithCustomerExcludingAssessedTax'
         ],
         'cost_of_goods_sold': [
             'us-gaap:CostOfRevenue',
@@ -23,20 +24,14 @@ def get_xbrl_tags():
             'InvestmentIncomeInterest',
             'InterestIncome'
         ],
-        'depreciation': [
-            'DepreciationAmortizationAndImpairment',
-            'DepreciationDepletionAndAmortization',
-            'DepreciationAmortizationAndAccretionNet',
-            'DepreciationAndAmortization',
-            'tsla:DepreciationAmortizationAndImpairment'
-        ],
         'profit_before_tax': [
             'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest',
             'ProfitLossBeforetax',
             'IncomeLossBeforeIncomeTaxes',
-            'ProfitBeforeTax'
+            'ProfitBeforeTax',
+            'IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest'
         ],
-        'income_tax': [
+        'income_tax_expense': [
             'us-gaap:IncomeTaxExpenseBenefit',
             'IncomeTaxExpenseBenefit',
             'IncomeTaxesPaid'
@@ -52,7 +47,8 @@ def get_xbrl_tags():
         ],
         'retained_earnings': [
             'RetainedEarningsAccumulatedDeficit',
-            'RetainedEarnings'
+            'RetainedEarnings',
+            'us-gaap:RetainedEarningsAccumulatedDeficit'
         ]
     }
     
@@ -62,7 +58,7 @@ def get_xbrl_tags():
             'CashCashEquivalentsAndMarketableSecurities',
             'MarketableSecurities'
         ],
-        'current_assets': [
+        'total_current_assets': [
             'AssetsCurrent'
         ],
         'ppe_gross': [
@@ -75,12 +71,20 @@ def get_xbrl_tags():
         'ppe_net': [
             'PropertyPlantAndEquipmentNet'
         ],
+        'total_assets': [
+            'Assets',
+            'us-gaap:Assets'
+        ],
         'current_liabilities': [
             'LiabilitiesCurrent'
         ],
         'long_term_liabilities': [
             'LiabilitiesNoncurrent',
             'NoncurrentLiabilities'
+        ],
+        'total_liabilities': [
+            'Liabilities',
+            'us-gaap:Liabilities'
         ],
         'outstanding_stock': [
             'CommonStockSharesOutstanding',
@@ -90,9 +94,15 @@ def get_xbrl_tags():
             'RetainedEarningsAccumulatedDeficit',
             'RetainedEarnings'
         ],
-        'StockHolders Equity': [
-            'StockholdersEquity'
+        'StockHolders_Equity': [
+            'StockholdersEquity',
+            'us-gaap:StockholdersEquity'
+        ],
+        'total_liabilities_and_SE': [
+            'LiabilitiesAndStockholdersEquity',
+            'us-gaap:LiabilitiesAndStockholdersEquity'
         ]
+
     }
     
     return {
