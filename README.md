@@ -89,10 +89,6 @@ python main.py TICKER [--basic YEARS | --detailed YEARS] [options]
   - `--detailed YEARS`: Fetch both annual and quarterly reports for specified number of years
 
 ### Optional Arguments
-- `--project YEARS`: Number of years to project (default: 5)
-- `--export`: Export analysis to Excel
-- `--output FILENAME`: Specify output filename for Excel export (default: 'financial_analysis.xlsx')
-- `--advanced`: Enable advanced data collection for better WACC/valuation estimates
 - `--debug`: Enable debug mode with additional output
 - `--print`: Print formatted financial statements to console
 
@@ -108,10 +104,6 @@ Detailed data with debug output:
 python main.py MSFT --detailed 5 --debug
 ```
 
-Export to Excel:
-```
-python main.py GOOGL --basic 3 --export --output google_analysis.xlsx
-```
 
 ## Project Status
 
@@ -135,7 +127,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Contact
 
 collin.zorn@gmail.com
-
-## License
-
-[Your chosen license]
