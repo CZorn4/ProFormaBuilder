@@ -1,7 +1,13 @@
 import requests
 import time
+import os
+from dotenv import load_dotenv
 
-def make_http_request(url=None, cik=None):
+# Load .env file from parent directory
+load_dotenv()
+user = os.environ.get('USER')
+
+def make_http_request(url=None, cik=None,):
     """
     Make an HTTP request to the SEC API
     
@@ -13,7 +19,7 @@ def make_http_request(url=None, cik=None):
         requests.Response or None: Response object if successful, None if failed
     """
     headers = {
-        'User-Agent': 'Collin Zorn collin.d.zorn-1@ou.edu'
+        'User-Agent': {user}
     }
     
     if not url and not cik:
