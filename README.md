@@ -34,6 +34,7 @@ The only universal attributes you can rely on are an end date, and the name of t
 
 So far, I havent had many issues with this. The only issue is when an item is filed in a way that no other is filed for, like some items only have Q3 reports for some random reason. this will still match the end date proprely and reord the item, but you will see that the start date is different than any other item in the period, meaning that the analysis engine will have to be built to take start dates into account to resolve this case. Here is an example, Apple's "deferred income tax" is reported in 3 quarter intervals and never in 1 quarter intervals. the only way around this would be to just drop the item but I am not going to do that.
 
+```
 Income Before Tax:
 Income Before Tax                             $2,784,000,000.00 (2024-07-01 to 2024-09-30)
 
@@ -47,7 +48,7 @@ Net Income:
 Profit Loss                                   $2,183,000,000.00 (2024-07-01 to 2024-09-30)
 Income From Noncontrolling Interests          $16,000,000.00 (2024-07-01 to 2024-09-30)
 Net Income                                    $2,167,000,000.00 (2024-07-01 to 2024-09-30)
-
+```
 submissions endpoint - 
 
 this one is way more simple. just query the endpoint, sort for items where the form is 10-K or 10-Q and the "isXBRL" is "1",
