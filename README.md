@@ -16,8 +16,8 @@ There is no true universal way that every company uses to file their financial r
 (eXtensible Business Reporting Language) as a general guideline for filing fincancials, but one company might use
 a tag set that another doesnt. I have designed a way to aggregate line items into financial periods based on matching the
 report dates from the company "submissions" endpoint to the report dates for the raw line item in the "companyfacts" endpoint.
-you can run the two tests in the tests folder to see how the raw data looks, . I chose this way because I tried a bunch of other ways
-and this way produced the least amount of edge cases. It is important to understand that you cannot rely on one system to work the same for every comapny, because pretty much every rule ever created by the SEC has some sort of work around. I have no clue if this way is remotely the best way, but it works for now.
+you can run the two tests in the tests folder to see how the raw data looks. I chose this way because I tried a bunch of other ways
+and this way produced the least amount of edge cases. It is important to understand that you cannot rely on one system to work the same for every company, because pretty much every rule ever created by the SEC has some sort of work around. I have no clue if this way is remotely the best way, but it works for now.
 
 companyfacts endpoint -
 
@@ -52,7 +52,7 @@ Net Income                                    $2,167,000,000.00 (2024-07-01 to 2
 submissions endpoint - 
 
 this one is way more simple. just query the endpoint, sort for items where the form is 10-K or 10-Q and the "isXBRL" is "1",
-and record items. if the user set the system to basic, just return the 10-K's and if its detailed, return both. note that the report date (synonymous to end date) is the most important piece of information to return here, because as I said before, its the most reliable piece of data in the database. If you have the report date, you can jsut match the end date of the line items to effectivley "reconstruct" the
+and record items. if the user set the system to basic, just return the 10-K's and if its detailed, return both. note that the report date (synonymous to end date) is the most important piece of information to return here, because as I said before, its the most reliable piece of data in the database. If you have the report date, you can just match the end date of the line items to effectivley "reconstruct" the
 most universal form of the financial report at that date.
 
 
@@ -60,7 +60,7 @@ most universal form of the financial report at that date.
 
 Clone the repository:
 ```
-git clone [your-repo-url]
+git clone https://github.com/CZorn4/ProFormaBuilder.git
 cd pro-forma-builder
 ```
 
